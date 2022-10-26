@@ -2,7 +2,7 @@ package types;
 
 import java.io.*;
 
-public class PersistentData {
+public class PersistentDataFRPhandle {
     static final byte VERSION_1 = 1;
     static final int VERSION_1_HEADER_SIZE = 1 + 1 + 4 + 4;
 
@@ -11,21 +11,21 @@ public class PersistentData {
     public static final int TYPE_SP_WEAVER = 2;
 
     //public static final PersistentData NONE = new PersistentData(TYPE_NONE, UserHandle.USER_NULL, DevicePolicyManager.PASSWORD_QUALITY_UNSPECIFIED, null);
-    public static final PersistentData NONE = new PersistentData(TYPE_NONE, 0, 0, null);
+    public static final PersistentDataFRPhandle NONE = new PersistentDataFRPhandle(TYPE_NONE, 0, 0, null);
 
-    final int type;
-    final int userId;
-    final int qualityForUi;
-    final byte[] payload;
+    public int type;
+    public int userId;
+    public int qualityForUi;
+    public byte[] payload;
 
-    private PersistentData(int type, int userId, int qualityForUi, byte[] payload) {
+    private PersistentDataFRPhandle(int type, int userId, int qualityForUi, byte[] payload) {
         this.type = type;
         this.userId = userId;
         this.qualityForUi = qualityForUi;
         this.payload = payload;
     }
 
-    public static PersistentData fromBytes(byte[] frpData) {
+    public static PersistentDataFRPhandle fromBytes(byte[] frpData) {
         if (frpData == null || frpData.length == 0) {
             return NONE;
         }
@@ -33,13 +33,13 @@ public class PersistentData {
         DataInputStream is = new DataInputStream(new ByteArrayInputStream(frpData));
         try {
             byte version = is.readByte();
-            if (version == PersistentData.VERSION_1) {
+            if (version == PersistentDataFRPhandle.VERSION_1) {
                 int type = is.readByte() & 0xFF;
                 int userId = is.readInt();
                 int qualityForUi = is.readInt();
                 byte[] payload = new byte[frpData.length - VERSION_1_HEADER_SIZE];
                 System.arraycopy(frpData, VERSION_1_HEADER_SIZE, payload, 0, payload.length);
-                return new PersistentData(type, userId, qualityForUi, payload);
+                return new PersistentDataFRPhandle(type, userId, qualityForUi, payload);
             } else {
     //            Slog.wtf(TAG, "Unknown PersistentData version code: " + version);
                 System.out.println("Unknown PersistentData version code: " + version);
@@ -55,7 +55,7 @@ public class PersistentData {
 
     public static byte[] toBytes(int persistentType, int userId, int qualityForUi,
                                  byte[] payload) {
-        if (persistentType == PersistentData.TYPE_NONE) {
+        if (persistentType == PersistentDataFRPhandle.TYPE_NONE) {
             //Preconditions.checkArgument(payload == null, "TYPE_NONE must have empty payload");
             return null;
         }
@@ -65,7 +65,7 @@ public class PersistentData {
                 VERSION_1_HEADER_SIZE + payload.length);
         DataOutputStream dos = new DataOutputStream(os);
         try {
-            dos.writeByte(PersistentData.VERSION_1);
+            dos.writeByte(PersistentDataFRPhandle.VERSION_1);
             dos.writeByte(persistentType);
             dos.writeInt(userId);
             dos.writeInt(qualityForUi);

@@ -1,3 +1,5 @@
+package types;
+
 import java.nio.ByteBuffer;
 
 public class PasswordData {
@@ -10,18 +12,34 @@ public class PasswordData {
     private static final int PASSWORD_SCRYPT_LOG_P = 1;
     private static final int PASSWORD_SALT_LENGTH = 16;
     private static final int PASSWORD_TOKEN_LENGTH = 32;
-    private static final String TAG = "SyntheticPasswordManager";
 
 
 
-    byte scryptLogN;
-    byte scryptLogR;
-    byte scryptLogP;
+    public byte scryptLogN;
+    public byte scryptLogR;
+    public byte scryptLogP;
     public int credentialType;
-    byte[] salt;
+    public byte[] salt;
     // For GateKeeper-based credential, this is the password handle returned by GK,
     // for weaver-based credential, this is empty.
     public byte[] passwordHandle;
+
+    /*
+    typedef uint64_t secure_id_t;
+    typedef uint64_t salt_t;
+
+    static const uint8_t HANDLE_VERSION = 2;
+    struct __attribute__ ((__packed__)) password_handle_t {
+        // fields included in signature
+        uint8_t version;
+        secure_id_t user_id;
+        uint64_t flags;
+        // fields not included in signature
+        salt_t salt;
+        uint8_t signature[32];
+        bool hardware_backed;
+    };
+    */
 
     public static PasswordData create(int passwordType) {
         PasswordData result = new PasswordData();
